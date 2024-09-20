@@ -20,18 +20,17 @@ def parse_recipe_with_openai(raw_text):
     - Summary (text): Based on text please make a short summary.
     - Ingredients (text): As close to original as possible
     - Steps (text): As close to original as possible
-    - Prep Time (int): As close to original as possible
-    - Time to Ready (int): As close to original as possible
-    - Kitchenware (dict): approximate number and type of dishes/pans/bowls used in this recipe.
+    - Prep_Time (int): As close to original as possible
+    - Time_to_Ready (int): As close to original as possible
+    - Kitchenware (dict): approximate number (int only)and type of dishes/pans/bowls used in this recipe.
     - Ethnicity (text): ethnicity of meal or broad category
-    - Meat type (text): please describe if it has meat and if can be adapted to vegetarian easily or not and if meat can be easily added
+    - Meat_type (text): please describe if it has meat and if can be adapted to vegetarian easily or not and if meat can be easily added
     - Main volume (text): what is the volume of the meal mostly made of? Meat and potatos, Rice and vegetables?
     - Difficulty (text): Please choose from Easy, Moderate, Hard based on recipe
-    - Raw text (text)
 
     Conditional:
     - Sauce (text): These are sauces that have instructions to be made. Please use None if none and include multiple if ther are multiple sauces.
-    - Side dishes (text): None if none and include multiple if ther are multiple side dishes. A side dish is something that is added on or next to the main dish.
+    - Side_dishes (text): None if none and include multiple if ther are multiple side dishes. A side dish is something that is added on or next to the main dish.
 
     If any required field is missing, throw an error.
     Please return in json format. Please properly escape newline characters with \\n. Please properly concatenate multiline strings or write as a single line.
@@ -59,7 +58,7 @@ def parse_recipe_with_openai(raw_text):
     # Validate required fields
     required_fields = [
         "Title", "Subtitle", "Summary", "Ingredients", "Steps", 
-        "Prep Time", "Time to Ready", "Kitchenware", "Ethnicity", "Meat type", "Main volume", "Difficulty"
+        "Prep_Time", "Time_to_Ready", "Kitchenware", "Ethnicity", "Meat_type", "Main_volume", "Difficulty"
     ]
 
     for field in required_fields:
@@ -70,7 +69,7 @@ def parse_recipe_with_openai(raw_text):
     if "Sauce" not in parsed_json:
         parsed_json["Sauce"] = "none"
     if "Side dishes" not in parsed_json:
-        parsed_json["Side dishes"] = "none"
+        parsed_json["Side_dishes"] = "none"
     print(parsed_json)
     return parsed_json
 
@@ -82,7 +81,7 @@ def save_json(json_data, output_path):
 # Main function to process PDFs
 def process_pdfs(input_directory, output_directory):
     for index, filename in enumerate(os.listdir(input_directory)):
-        if index == 2 and filename.endswith(".pdf"):
+        if index == 3 and filename.endswith(".pdf"):
             pdf_path = os.path.join(input_directory, filename)
             output_path = os.path.join(output_directory, f"{os.path.splitext(filename)[0]}.json")
 
@@ -92,7 +91,7 @@ def process_pdfs(input_directory, output_directory):
             # Use OpenAI to parse the recipe
             try:
                 parsed_json = parse_recipe_with_openai(raw_text)
-                parsed_json["Raw text"] = raw_text  # Ensure raw text is included
+                parsed_json["Raw_text"] = raw_text  # Ensure raw text is included
 
                 # Save the JSON file
                 save_json(parsed_json, output_path)

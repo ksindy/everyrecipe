@@ -4,3 +4,5 @@
 data/
 filenames.txt
 venv_everyplate/
+__pycache__
+*.py[cod]
